@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CongestionTax.Domain\CongestionTax.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
