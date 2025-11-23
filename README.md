@@ -2,10 +2,6 @@
 
 This project calculates the congestion tax for vehicles passing through toll stations in a city, specifically focusing on Gothenburg. The tax varies based on time of day, and the system allows exemptions for certain vehicle types and holidays.
 
-## Purpose
-
-The application is designed to calculate the tax for vehicles passing through tolls based on the rules defined for Gothenburg. The tax rate is determined by the time of day and whether the vehicle is exempt due to holidays or special vehicle types (e.g., emergency vehicles).
-
 ## Features
 
 - **Congestion Tax Calculation**: Calculates the tax based on time intervals and vehicle type.
@@ -20,7 +16,7 @@ Follow these steps to set up and run the project locally.
 ### Prerequisites
 
 Make sure you have the following installed on your machine:
-- [.NET SDK](https://dotnet.microsoft.com/download) (6.0 or higher)
+- [.NET SDK](https://dotnet.microsoft.com/download) (8.0 or higher)
 - [SQLite](https://www.sqlite.org/download.html) (or use an in-memory database during development)
 - A text editor or IDE of your choice (e.g., Visual Studio Code)
 
@@ -68,28 +64,6 @@ Make sure you have the following installed on your machine:
     ```
 
     The program will calculate the tax based on the timestamps defined in **`ExampleDates.txt`**. This file contains the dates and times when a vehicle passed through the toll.
-
-### Example of `ExampleDates.txt`:
-
-2013-01-14 21:00:00
-2013-01-15 21:00:00
-2013-02-07 06:23:27
-2013-02-07 15:27:00
-2013-02-08 06:27:00
-2013-02-08 06:20:27
-2013-02-08 14:35:00
-2013-03-28 14:07:27
-
-
-### Output Example:
-
-2013-01-14: 0 SEK
-2013-01-15: 0 SEK
-2013-02-07: 21 SEK
-2013-02-08: 16 SEK
-2013-03-28: 0 SEK
-Grand total: 37 SEK
-
 
 ## Structure
 
