@@ -5,54 +5,71 @@ namespace CongestionTax.Application;
 
 public class TaxCalculator : ITaxCalculator
 {
-    public int CalculateTax(Vehicle vehicle, List<DateTime> timestamps, RuleSet ruleSet)
+    public Dictionary<DateTime, int> CalculateTax(Vehicle vehicle, List<DateTime> timestamps, RuleSet ruleSet)
     {
         if (vehicle == null || timestamps == null || ruleSet == null)
             throw new ArgumentNullException("Arguments cannot be null");
 
         // Filter out exempt vehicles
         if (ruleSet.ExemptVehicles.Contains(vehicle.Type))
-            return 0;
+            return new Dictionary<DateTime, int>();
 
-        // Group timestamps into single charge based on 60-minute window
-        var groupedTimestamps = GroupTimestampsBySingleCharge(timestamps, ruleSet.SingleChargeMinutes);
+        // Group timestamps by day
+        var groupedByDay = timestamps
+            .GroupBy(t => t.Date)
+            .OrderBy(g => g.Key);
 
-        // Calculate the total tax
-        int totalTax = 0;
+        var result = new Dictionary<DateTime, int>();
 
-        foreach (var group in groupedTimestamps)
+
+        foreach (var dayGroup in groupedByDay)
         {
-            // Calculate the maximum tax amount for the group
-            int maxTax = 0;
-            foreach (var timestamp in group)
+            var groupedTimestamps = GroupTimestampsBySingleCharge(dayGroup.ToList(), ruleSet.SingleChargeMinutes);
+
+            int dailyTotal = 0;
+            foreach (var group in groupedTimestamps)
             {
-                var tax = CalculateTaxForTimestamp(timestamp, ruleSet);
-                maxTax = Math.Max(maxTax, tax);
+                int maxTax = 0;
+                foreach (var timestamp in group)
+                {
+                    var tax = CalculateTaxForTimestamp(timestamp, ruleSet);
+                    maxTax = Math.Max(maxTax, tax);
+                }
+                dailyTotal += maxTax;
             }
-            totalTax += maxTax;
+
+            // Apply daily cap
+            result[dayGroup.Key] = Math.Min(dailyTotal, ruleSet.MaxDailyFee);
         }
 
-        // Ensure total tax does not exceed the max daily fee
-        return Math.Min(totalTax, ruleSet.MaxDailyFee);
+        return result;
     }
 
     private List<List<DateTime>> GroupTimestampsBySingleCharge(List<DateTime> timestamps, int chargeWindowMinutes)
     {
         var grouped = new List<List<DateTime>>();
-        timestamps = [.. timestamps.OrderBy(t => t)];
+        timestamps = timestamps.OrderBy(t => t).ToList();
 
-        List<DateTime> currentGroup = [];
+        List<DateTime> currentGroup = new();
+        DateTime? windowStart = null;
+
         foreach (var timestamp in timestamps)
         {
-            if (currentGroup.Count == 0 || (timestamp - currentGroup.Last()).TotalMinutes <= chargeWindowMinutes)
+            if (currentGroup.Count == 0)
+            {
+                currentGroup.Add(timestamp);
+                windowStart = timestamp;
+            }
+            else if ((timestamp - windowStart.Value).TotalMinutes <= chargeWindowMinutes)
             {
                 currentGroup.Add(timestamp);
             }
             else
             {
-                grouped.Add([.. currentGroup]);
+                grouped.Add(new List<DateTime>(currentGroup));
                 currentGroup.Clear();
                 currentGroup.Add(timestamp);
+                windowStart = timestamp;
             }
         }
 
@@ -64,21 +81,22 @@ public class TaxCalculator : ITaxCalculator
 
     private int CalculateTaxForTimestamp(DateTime timestamp, RuleSet ruleSet)
     {
-        if (ruleSet.ExemptedMonths.Contains(timestamp.Date.Month))
+        // Month exemption
+        if (ruleSet.ExemptedMonths.Contains(timestamp.Month))
             return 0;
 
-        var holiday = ruleSet.Holidays.Any(h => h.Date.Date == timestamp.Date);
-        if (holiday)
-            return 0; // No tax on holidays
-        
-        if (IsDayBeforeHoliday(timestamp, ruleSet.Holidays))
-            return 0; // No tax on days before holidays
+        // Holiday check
+        if (ruleSet.Holidays.Any(h => h.Date.Date == timestamp.Date))
+            return 0;
 
+        // Weekend / day before holiday
         if (IsWeekend(timestamp) || IsDayBeforeHoliday(timestamp, ruleSet.Holidays))
-            return 0; // No tax on weekends
+            return 0;
 
-        // Find applicable tax rule based on the time of day
-        var taxRule = ruleSet.TaxRules.FirstOrDefault(rule => timestamp.TimeOfDay >= rule.Start && timestamp.TimeOfDay <= rule.End);
+        // Find applicable tax rule
+        var taxRule = ruleSet.TaxRules
+            .FirstOrDefault(rule => timestamp.TimeOfDay >= rule.Start && timestamp.TimeOfDay <= rule.End);
+
         return taxRule?.Amount ?? 0;
     }
 

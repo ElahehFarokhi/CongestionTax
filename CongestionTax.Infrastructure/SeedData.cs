@@ -30,15 +30,19 @@ public static class SeedData
                 ],
                 Holidays =
                 [
-                    new Holiday { Date = new DateTime(2013, 1, 1) },
-                    new Holiday { Date = new DateTime(2013, 3, 29) },
-                    new Holiday { Date = new DateTime(2013, 4, 1) },
-                    new Holiday { Date = new DateTime(2013, 5, 1) },
-                    new Holiday { Date = new DateTime(2013, 5, 9) },
-                    new Holiday { Date = new DateTime(2013, 6, 6) },
-                    new Holiday { Date = new DateTime(2013, 6, 21) },
-                    new Holiday { Date = new DateTime(2013, 12, 25) },
-                    new Holiday { Date = new DateTime(2013, 12, 26) }
+                    new Holiday { Date = new DateTime(2013, 1, 1) },  // New Year's Day
+                    new Holiday { Date = new DateTime(2013, 1, 6) },  // Epiphany
+                    new Holiday { Date = new DateTime(2013, 3, 29) }, // Good Friday
+                    new Holiday { Date = new DateTime(2013, 3, 31) }, // Easter Sunday
+                    new Holiday { Date = new DateTime(2013, 4, 1) },  // Easter Monday
+                    new Holiday { Date = new DateTime(2013, 5, 1) },  // May Day
+                    new Holiday { Date = new DateTime(2013, 5, 9) },  // Ascension Day
+                    new Holiday { Date = new DateTime(2013, 5, 19) }, // Whit Sunday
+                    new Holiday { Date = new DateTime(2013, 6, 6) },  // National Day
+                    new Holiday { Date = new DateTime(2013, 6, 22) }, // Midsummer Day
+                    new Holiday { Date = new DateTime(2013, 11, 2) }, // All Saints' Day
+                    new Holiday { Date = new DateTime(2013, 12, 25) },// Christmas Day
+                    new Holiday { Date = new DateTime(2013, 12, 26) } // Boxing Day
 
                 ],
                 ExemptVehicles = [VehicleType.Emergency, VehicleType.Bus, VehicleType.Military, VehicleType.Motorcycle, VehicleType.Diplomat, VehicleType.Foreign],

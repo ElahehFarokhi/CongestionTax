@@ -50,9 +50,17 @@ List<DateTime> timestamps = File.ReadAllLines("ExampleDates.txt")
 // Create a vehicle (for example, a car)
 var vehicle = new Vehicle { Type = VehicleType.Car };
 
-// Calculate the congestion tax
-int fee = calc.CalculateTax(vehicle, timestamps, city.RuleSet);
+// Calculate daily tax
+var dailyTaxes = calc.CalculateTax(vehicle, timestamps, city.RuleSet);
 
-// Output the result to the console
-Console.WriteLine($"Congestion tax for today: {fee}");
-Console.ReadLine();  // Keep the console open
+// Print per-day results
+foreach (var kvp in dailyTaxes)
+{
+    Console.WriteLine($"{kvp.Key:yyyy-MM-dd}: {kvp.Value} SEK");
+}
+
+// Print grand total
+int grandTotal = dailyTaxes.Values.Sum();
+Console.WriteLine($"Grand total: {grandTotal} SEK");
+
+Console.ReadLine();

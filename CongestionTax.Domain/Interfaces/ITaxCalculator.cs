@@ -2,7 +2,7 @@
 {
     public interface ITaxCalculator
     {
-        int CalculateTax(Vehicle vehicle, List<DateTime> dates, RuleSet rules);
+        Dictionary<DateTime, int> CalculateTax(Vehicle vehicle, List<DateTime> dates, RuleSet rules);
     }
 
 }
