@@ -72,19 +72,5 @@ Make sure you have the following installed on your machine:
 - **Infrastructure Layer**: Contains the database context (`TaxDbContext`) and seed data.
 - **Console Application**: The entry point for running the application and performing the tax calculation.
 
-## Files Overview
-
-- **`TaxCalculator.cs`**: Calculates the tax based on timestamps, vehicle type, and tax rules.
-- **`Program.cs`**: The entry point for running the application, loading data, and calculating taxes.
-- **`SeedData.cs`**: Seeds the database with initial data (e.g., city configuration, tax rules, and holidays).
-- **`TaxDbContext.cs`**: Entity Framework Core context for managing the database.
-- **Models**: Includes the definitions for `CityConfig`, `Holiday`, `RuleSet`, `TaxRule`, and `Vehicle`.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 Feel free to reach out if you have any questions or suggestions!
 
